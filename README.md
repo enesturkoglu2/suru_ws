@@ -54,3 +54,16 @@ Initialize 3 drones in Gazebo (Ports: 14540, 14541, 14542).
 ```bash
 cd ~/PX4-Autopilot
 Tools/simulation/gazebo-classic/sitl_multiple_run.sh -m iris -n 3 -w baylands
+🐛 Troubleshooting & Solutions
+Issue: "Ghost Topic" (Topic exists but no data)
+Cause: MAVROS filters incoming data based on Component ID, or FastDDS drops packets in WSL 2.
+
+Solution: 1.  Set target_component_id: 0 in the launch file to accept all components.
+2.  Switch to CycloneDDS: export RMW_IMPLEMENTATION=rmw_cyclonedds_cpp.
+
+Issue: "Waiting for service..."
+Cause: Namespace mismatch between MAVROS and the control node.
+
+Solution: Verified service names via ros2 service list. Adjusted code to call /uav0/set_stream_rate instead of /uav0/mavros/set_stream_rate.
+
+
